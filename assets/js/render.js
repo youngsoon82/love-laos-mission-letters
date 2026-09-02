@@ -31,12 +31,13 @@ function sizeClass(prefix, value, allowed) {
 }
 
 function figureHTML(block, extraClass = '') {
+  const src = String(block.url || '').trim();
+  const image = src
+    ? `<a href="${esc(src)}" target="_blank" rel="noopener noreferrer"><img class="letter__photo" src="${esc(src)}" alt="${esc(block.caption || '선교 사진')}" referrerpolicy="no-referrer"></a>`
+    : `<a href="${esc(driveViewUrl(block.driveId))}" target="_blank" rel="noopener noreferrer"><img class="letter__photo" data-drive-id="${esc(block.driveId)}" alt="${esc(block.caption || '선교 사진')}" referrerpolicy="no-referrer"></a>`;
   return `
     <figure class="letter__figure ${extraClass}">
-      <a href="${esc(driveViewUrl(block.driveId))}" target="_blank" rel="noopener noreferrer">
-        <img class="letter__photo" data-drive-id="${esc(block.driveId)}"
-             alt="${esc(block.caption || '선교 사진')}" referrerpolicy="no-referrer">
-      </a>
+      ${image}
       <div class="letter__photo-fallback" hidden>${SHARE_HELP}</div>
       ${block.caption ? `<figcaption>${esc(block.caption)}</figcaption>` : ''}
     </figure>`;
@@ -150,8 +151,8 @@ export function letterHTML(body, meta = {}) {
 
   // 머리글 사진. 옛 편지는 본문 첫 사진을 머리글로 썼으므로 그것도 받아 준다.
   const heroField = String(body.hero || '').trim();
-  const legacy = !heroField && all[0]?.type === 'image' && all[0].driveId ? all[0] : null;
-  const heroSrc = heroField || legacy?.driveId || '';
+  const legacy = !heroField && all[0]?.type === 'image' && (all[0].driveId || all[0].url) ? all[0] : null;
+  const heroSrc = heroField || legacy?.driveId || legacy?.url || '';
   const heroSize = heroField ? body.heroSize : legacy?.size;
   const rest = legacy ? all.slice(1) : all;
 
@@ -161,11 +162,11 @@ export function letterHTML(body, meta = {}) {
   while (i < rest.length) {
     const block = rest[i];
 
-    if (block.type === 'image' && block.driveId) {
+    if (block.type === 'image' && (block.driveId || block.url)) {
       const per = perRowOf(block);
       const run = [];
       while (i < rest.length
-             && rest[i].type === 'image' && rest[i].driveId
+             && rest[i].type === 'image' && (rest[i].driveId || rest[i].url)
              && perRowOf(rest[i]) === per) {
         run.push(rest[i]);
         i++;
@@ -254,13 +255,14 @@ export async function loadLetterImages(root) {
 export async function printLetter(root, onStatus) {
   onStatus?.('사진을 불러오는 중입니다…');
   const { failed, total } = await loadLetterImages(root);
-  // 디코딩까지 끝나야 인쇄에 반영된다.
+  // 외부 HTTPS 사진도 디코딩이 끝나야 PDF에 반영된다.
   await Promise.all(
-    Array.from(root.querySelectorAll('img[data-drive-id]'))
-      .filter(img => img.src && !img.dataset.driveFailed)
+    Array.from(root.querySelectorAll('img'))
+      .filter(img => img.src && img.complete && !img.dataset.driveFailed)
       .map(img => (img.decode ? img.decode().catch(() => {}) : Promise.resolve()))
   );
   onStatus?.(failed ? `사진 ${total}장 중 ${failed}장을 불러오지 못했습니다.` : '');
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  if (typeof window.print !== 'function') throw new Error('PRINT_UNAVAILABLE');
   window.print();
 }
