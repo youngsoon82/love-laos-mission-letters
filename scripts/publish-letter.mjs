@@ -98,8 +98,8 @@ async function main() {
     console.error('id, password, body 는 필수입니다.');
     process.exit(1);
   }
-  if (password.length < 8) {
-    console.error('비밀번호는 8자 이상이어야 합니다.');
+  if (password.length < 4) {
+    console.error('비밀번호는 4자 이상이어야 합니다.');
     process.exit(1);
   }
 
