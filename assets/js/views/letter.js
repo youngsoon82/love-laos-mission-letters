@@ -118,7 +118,8 @@ function showLetter(root, meta, body, id) {
     <div class="page page--reader">
       ${letterHTML(body, meta)}
       <div class="reader-actions no-print">
-        <button class="btn btn--ghost" id="print-btn">PDF로 저장 / 인쇄</button>
+        <button class="btn btn--ghost" id="print-btn">PDF로 저장</button>
+        <p class="reader-actions__help">인쇄 창의 ‘대상’에서 <strong>PDF로 저장</strong>을 선택하세요.</p>
         <span class="reader-actions__status" id="print-status"></span>
       </div>
       <nav class="letter-nav no-print" id="letter-nav" hidden></nav>
@@ -134,6 +135,9 @@ function showLetter(root, meta, body, id) {
     button.disabled = true;
     try {
       await printLetter(article, message => { $('#print-status', root).textContent = message; });
+      $('#print-status', root).textContent = '인쇄 창에서 ‘PDF로 저장’을 선택해 주세요.';
+    } catch (err) {
+      $('#print-status', root).textContent = '인쇄 창을 열지 못했습니다. 브라우저의 인쇄 기능을 허용한 뒤 다시 시도해 주세요.';
     } finally {
       button.disabled = false;
     }
