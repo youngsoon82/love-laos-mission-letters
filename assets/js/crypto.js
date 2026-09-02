@@ -99,11 +99,11 @@ export async function decryptBody(letterFile, password) {
   }
 }
 
-/** 비밀번호 강도 검사 — PRD §6.4: 8자 이상 강제, 약한 비밀번호 경고 */
+/** 비밀번호 강도 검사 — 4자 이상 강제, 약한 비밀번호 경고 */
 export function checkPassword(password) {
   const value = String(password ?? '');
-  if (value.length < 8) {
-    return { ok: false, message: '비밀번호는 8자 이상이어야 합니다.' };
+  if (value.length < 4) {
+    return { ok: false, message: '비밀번호는 4자 이상이어야 합니다.' };
   }
   if (/^\d+$/.test(value)) {
     return { ok: true, warn: true, message: '숫자로만 되어 있어 추측당하기 쉽습니다. 글자를 섞어 주세요.' };
