@@ -799,6 +799,8 @@ textarea { resize: vertical; line-height: 1.8; }
 .lock .reader-foot { text-align: left; margin-top: 28px; }
 .reader-foot a { font-size: 14px; color: var(--ink-faint); text-decoration: none; }
 .reader-foot a:hover { color: var(--accent); text-decoration: underline; }
+.reader-actions__help { margin: 8px 0 0; font-size: 13px; color: var(--ink-faint); }
+.reader-actions__status { display: block; margin-top: 6px; font-size: 13px; color: var(--accent); }
 
 /* 대화상자가 열린 동안 배경 스크롤 잠금 */
 body.is-locked {
