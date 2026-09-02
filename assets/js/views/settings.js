@@ -65,7 +65,7 @@ export function renderSettings(root) {
           <h2 class="card__title">3. 기본 비밀번호</h2>
           <p class="card__lead">새 편지를 쓸 때 자동으로 채워집니다. 목록에서 편지 제목을 보여줄 때도 사용합니다.</p>
           <label class="field">
-            <span class="field__label">비밀번호 (8자 이상)</span>
+            <span class="field__label">비밀번호 (4자 이상)</span>
             <input name="defaultPassword" type="text" value="${esc(s.defaultPassword)}" placeholder="후원자에게 알려줄 비밀번호" autocapitalize="none" spellcheck="false">
             <span class="field__hint">후원자에게 링크와 함께 알려주는 값입니다. 숨길 필요가 없어 그대로 보입니다.</span>
           </label>

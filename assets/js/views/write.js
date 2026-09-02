@@ -223,7 +223,7 @@ function paint(root) {
         <h2 class="card__title">비밀번호</h2>
         <div class="field-row">
           <label class="field">
-            <span class="field__label">이 편지의 비밀번호 (8자 이상)</span>
+            <span class="field__label">이 편지의 비밀번호 (4자 이상)</span>
             <input id="password" type="text" value="${esc(state.password)}" autocapitalize="none" spellcheck="false">
           </label>
           <label class="field">
